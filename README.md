@@ -12,6 +12,7 @@
 ### Attribute
 Create Dummy field and give it attribute [Graph("Method name")]
 ![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Attribute.png)
+![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/AttributeVis.png)
 
 Visualised method has to be declared as public `float MethodName(float x)`
 
