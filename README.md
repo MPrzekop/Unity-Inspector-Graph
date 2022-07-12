@@ -22,13 +22,15 @@ template:
         }
 ```
 
+full parameters (Method name, function x start, function x end, rect height):
+
+```
+ [SerializeField, Graph("F",-5,5,200)] public float dummyFull;
+```
 
 ![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/AttributeVis.png)
 
 Visualised method has to be declared as public `float MethodName(float x)`
-
-
-Attribute can take graph start and end value, as well as graph rect height.
 
 ### Custom editor
 In custom editor create a call to `GraphDrawer.DrawGraph()` there are overloads for:
