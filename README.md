@@ -1,5 +1,5 @@
 
-# Unity inspector graph visualiser
+# Unity inspector graph drawer
 
  Draw any graph in your custom editor.
  
