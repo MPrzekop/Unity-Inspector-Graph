@@ -7,6 +7,13 @@
   <img src="https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Main.png" width="700" title="header image of overlayed sines">
  </p>
  
+## Instalation
+### Package Manager
+
+Go to `Window -> Package Manager` and add from git [URL](https://docs.unity3d.com/Manual/upm-ui-giturl.html) using this URL:
+
+`https://github.com/MPrzekop/unity-inspector-graph-drawer.git`
+
 
 ## How to Use
 ### Attribute
