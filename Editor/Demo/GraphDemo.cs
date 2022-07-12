@@ -16,8 +16,6 @@ namespace mprzekop.unityinspectorgraph.demo
        
         public float F(float x)
         {
-            int seed = Mathf.CeilToInt(2149*x);
-            Random.InitState(seed);
             return Mathf.Sin(x) + Mathf.Sin(x*25)*0.2f;
         }
     }
