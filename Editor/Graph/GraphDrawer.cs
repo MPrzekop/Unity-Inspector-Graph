@@ -161,7 +161,7 @@ namespace mprzekop.unityinspectorgraph.graph
                 data[i] = new LineData()
                 {
                     color = functions[i].LineColor,
-                    points = LineFunctionSampler.SampleLineFunction(functions[i], 200),
+                    points = LineFunctionSampler.SampleLineFunction(functions[i], Mathf.CeilToInt(300)),
                     width = functions[i].LineWidth
                 };
             }

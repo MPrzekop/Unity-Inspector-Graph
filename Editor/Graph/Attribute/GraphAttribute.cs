@@ -49,7 +49,7 @@ public class GraphAttributePropertyDrawer : PropertyDrawer
                     // Debug.Log();
 //                    EditorGUILayout.LabelField(graphAttribute.MethodName);
 
-                    GraphDrawer.DrawGraph(new LineFunctionData(
+                    GraphDrawer.DrawGraphAttribute(position,new LineFunctionData(
                         (x) =>
                         {
                             return (float) _eventMethodInfo.Invoke(prop.serializedObject.targetObject,
