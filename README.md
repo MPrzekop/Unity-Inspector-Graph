@@ -22,10 +22,10 @@ template:
         }
 ```
 
-full parameters `(Method name, function x start, function x end, rect height)`:
+full parameters `(Method name, function x start, function x end, rect height, sample count)`:
 
 ```
- [SerializeField, Graph("F",-5,5,200)] public float dummyFull;
+ [SerializeField, Graph(MethodName: "F",start:-5,end: 5,rectHeight:200,samples:400)] public float dummyFull;
 ```
 
 ![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/AttributeVis.png)
