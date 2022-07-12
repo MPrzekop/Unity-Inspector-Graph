@@ -1,8 +1,12 @@
 {
-    "name": "Organization.Package",
+    "name": "MPrzekop.UnityInspectorGraph.Editor",
     "rootNamespace": "",
-    "references": [],
-    "includePlatforms": [],
+    "references": [
+        "MPrzekop.UnityInspectorGraph"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
