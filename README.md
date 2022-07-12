@@ -5,6 +5,8 @@
  
  <p align="center">
   <img src="https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Main.png" width="700" title="header image of overlayed sines">
+  <img src="https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Animation.gif" width="700" title="header image of overlayed sines">
+ 
  </p>
  
 ## Instalation
