@@ -47,5 +47,7 @@ but can also be declared to have regular grid:
 
 ## notes
 There is demo component and custom editor for it.
-
+<p align="center">
+  <img src="https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Demo.png" width="700" title="hover text">
+ </p>
 
