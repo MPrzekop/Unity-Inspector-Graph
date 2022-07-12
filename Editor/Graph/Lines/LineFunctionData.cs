@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace mprzekop.unityinspectorgraph.graph
 {
+    /// <summary>
+    /// container for line function with additional used for drawing. 
+    /// </summary>
     public class LineFunctionData
     {
         #region fields

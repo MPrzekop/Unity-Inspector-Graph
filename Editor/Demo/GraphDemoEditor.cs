@@ -11,50 +11,40 @@ namespace mprzekop.unityinspectorgraph.demo
     public class GraphDemoEditor : Editor
     {
         private bool orthoLast = false;
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
             GraphDemo d = target as GraphDemo;
             EditorGUILayout.LabelField("interactive graph");
+//parametrised graph copying animation curve
             if (d.curve != null && d.curve.keys.Length > 0)
             {
-                GraphDrawer.DrawGraph(d.yPadding,new LineData()
+                GraphDrawer.DrawGraph(d.yPadding, new LineData()
                 {
                     color = d.curveColor,
                     points = getPoints(d.curve),
                     width = d.width
                 });
             }
-            GUI.color=Color.white;
+
+        
             EditorGUILayout.Space();
             EditorGUILayout.Space();
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("scripted graphs");
 
-
+//simple sine graph
             GraphDrawer.DrawGraph(100, new LineFunctionData((x) => { return Mathf.Sin(x); }, Color.green, 2f, -Mathf.PI,
                 Mathf.PI));
 
-            GraphDrawer.DrawGraph(100, new LineFunctionData((x) => { return Mathf.Pow(x - Mathf.PI, 2f); }, Color.red,
-                2f,
-                Mathf.PI,
-                2 * Mathf.PI), new LineFunctionData((x) => { return Mathf.Sin(x); }, Color.white, 2f, -Mathf.PI,
-                Mathf.PI));
-            GraphDrawer.DrawGraph(300, new LineFunctionData((x) => { return Mathf.Sin(x) + Mathf.Sin(x * 24) * 0.2f; },
-                Color.white,
-                3f, -Mathf.PI,
-                Mathf.PI), new LineFunctionData((x) => { return Mathf.Sin(x); }, Color.green, 1.5f, -Mathf.PI,
-                Mathf.PI));
 
-            orthoLast = EditorGUILayout.Toggle("ortho graph", orthoLast);
-            GraphDrawer.DrawGraph(300,20,20,orthoLast, new LineFunctionData((x) =>
-            {
-                return Mathf.Sqrt(1 - x * x + 2 * x * 0 - 0);
-            }, Color.black, 3f,-1,1),new LineFunctionData((x) =>
-            {
-                return -Mathf.Sqrt(1 - x * x + 2 * x * 0 - 0);
-            }, Color.black, 3f,-1,1));
+            DrawStitched();
 
+            DrawOverlayed();
+
+
+            DrawCircle();
         }
 
         Vector3[] getPoints(AnimationCurve curve, int samples = 200)
@@ -69,6 +59,43 @@ namespace mprzekop.unityinspectorgraph.demo
             }
 
             return points;
+        }
+
+        void DrawStitched()
+        {
+            //sine graph with exp stitched to the end
+            GraphDrawer.DrawGraph(100, new LineFunctionData((x) => { return Mathf.Pow(x - Mathf.PI, 2f); }, Color.red,
+                2f,
+                Mathf.PI,
+                2 * Mathf.PI), new LineFunctionData((x) => { return Mathf.Sin(x); }, Color.white, 2f, -Mathf.PI,
+                Mathf.PI));
+        }
+
+        void DrawOverlayed()
+        {
+            //overlayed 2 functions
+            GraphDrawer.DrawGraph(300, new LineFunctionData((x) => { return Mathf.Sin(x) + Mathf.Sin(x * 24) * 0.2f; },
+                Color.white,
+                3f, -Mathf.PI,
+                Mathf.PI), new LineFunctionData((x) => { return Mathf.Sin(x); }, Color.green, 1.5f, -Mathf.PI,
+                Mathf.PI));
+        }
+
+        void DrawCircle()
+        {
+            //circle graph with ortho toggle
+            orthoLast = EditorGUILayout.Toggle("ortho graph", orthoLast);
+            float radius = 1;
+            var topCircle = new LineFunctionData((x) => { return Mathf.Sqrt(radius - x * x + 2 * x * 0 - 0); },
+                Color.black, 3f, -1,
+                1);
+            var bottomCircle = new LineFunctionData((x) => { return -Mathf.Sqrt(radius - x * x + 2 * x * 0 - 0); },
+                Color.black, 3f,
+                -1,
+                1);
+            GraphDrawer.DrawGraph(samples: 300, windowPadding: 20, yRectPadding: 20, orthoLast, topCircle,
+                bottomCircle
+            );
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace mprzekop.unityinspectorgraph.graph
 {
-    public class GraphDrawer
+    public static class GraphDrawer
     {
         private const float FontSize = 12;
 
@@ -21,6 +21,21 @@ namespace mprzekop.unityinspectorgraph.graph
                 data[i].x = data[i].x.Remap(minX, maxX, newMin.x, newMax.x);
                 data[i].y = newMax.y - data[i].y.Remap(minY, maxY, newMin.y, newMax.y);
             }
+        }
+
+        public static void DrawGraph(params Vector3[][] points)
+        {
+            var data = new LineData[points.Length];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = new LineData()
+                {
+                    color = Color.white,
+                    points = points[i],
+                    width = 2
+                };
+            }
+            DrawGraph(200, 20, 20, Color.clear, false, data);
         }
 
         public static void DrawGraph(params LineFunctionData[] functions)
@@ -49,7 +64,7 @@ namespace mprzekop.unityinspectorgraph.graph
                 data[i] = new LineData()
                 {
                     color = functions[i].LineColor,
-                    points = LineFunction.SampleLineFunction(functions[i], samples),
+                    points = LineFunctionSampler.SampleLineFunction(functions[i], samples),
                     width = functions[i].LineWidth
                 };
             }
@@ -69,6 +84,15 @@ namespace mprzekop.unityinspectorgraph.graph
             DrawGraph(200, 20, yPadding, Color.clear, false, data);
         }
 
+        /// <summary>
+        /// draw graph rect
+        /// </summary>
+        /// <param name="rectHeight"> max height of created rect</param>
+        /// <param name="windowPadding"> padding between rect and graph </param>
+        /// <param name="yPadding"> padding of line values to avoid clipping in the top/bottom of the graph window </param>
+        /// <param name="backgroundColor"> color behind graph</param>
+        /// <param name="orthogonalLayout"> should grid be of equal size on X and Y coords </param>
+        /// <param name="data"> lines to draw </param>
         public static void DrawGraph(float rectHeight = 200, float windowPadding = 20, float yPadding = 20,
             Color backgroundColor = default, bool orthogonalLayout = false,
             params LineData[] data)
@@ -105,6 +129,69 @@ namespace mprzekop.unityinspectorgraph.graph
                 minY = minX;
                 minX *= unitToRectX * rectToUnitY;
             }
+
+            for (var index = 0; index < data.Length; index++)
+            {
+                RemapSet(ref data[index].points, new Vector2(minX, minY), new Vector2(maxX, maxY),
+                    new Vector2(windowPadding, windowPadding),
+                    new Vector2(rect.width - windowPadding, rect.height - windowPadding));
+            }
+
+            GUI.BeginGroup(rect);
+            Handles.color = Color.gray;
+            DrawDividers(minX, maxX, minY, maxY, windowPadding, rect);
+
+            // Handles.DrawAAPolyLine(Texture2D.whiteTexture, 1f, new Vector3(padding, rect.height / 2),
+            //     new Vector3(rect.width - padding, rect.height / 2));
+            foreach (var d in data)
+            {
+                Handles.color = d.color;
+                Handles.DrawAAPolyLine(d.width, d.points);
+            }
+
+            GUI.EndGroup();
+            GUI.color = cache;
+        }
+
+        public static void DrawGraphAttribute(Rect position, params LineFunctionData[] functions)
+        {
+            var data = new LineData[functions.Length];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = new LineData()
+                {
+                    color = functions[i].LineColor,
+                    points = LineFunctionSampler.SampleLineFunction(functions[i], 200),
+                    width = functions[i].LineWidth
+                };
+            }
+
+            DrawGraphAttribute(position, data);
+        }
+
+        public static void DrawGraphAttribute(Rect position, params LineData[] data)
+        {
+            Color cache = GUI.color;
+
+            float windowPadding = 20;
+            var rect = new Rect(position.position, new Vector2(position.width, 200));
+            float yPadding = 20;
+            var allPoints = data.Select(x => x.points).ToArray();
+            var concatPoints = ConcatArrays(allPoints);
+            float maxY = Mathf.CeilToInt(concatPoints.Max(x => x.y) * 2f) / 2f;
+
+            float minY = Mathf.FloorToInt(concatPoints.Min(x => x.y) * 2f) / 2f;
+            float rectToUnitY = Mathf.Abs(maxY - minY) / (rect.height - windowPadding * 2);
+            float unitToRectY = (rect.height - windowPadding * 2) / Mathf.Abs(maxY - minY);
+
+
+            maxY += rectToUnitY * yPadding;
+            minY -= rectToUnitY * yPadding;
+            float maxX = concatPoints.Max(x => x.x);
+            float minX = concatPoints.Min(x => x.x);
+            float rectToUnitX = Mathf.Abs(maxX - minX) / (rect.width - windowPadding * 2);
+            float unitToRectX = (rect.width - windowPadding * 2) / Mathf.Abs(maxX - minX);
+
 
             for (var index = 0; index < data.Length; index++)
             {
