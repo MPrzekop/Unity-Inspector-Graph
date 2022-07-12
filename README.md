@@ -11,7 +11,18 @@
 ## How to Use
 ### Attribute
 Create Dummy field and give it attribute [Graph("Method name")]
-![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Attribute.png)
+template:
+
+```
+ [SerializeField, Graph("F")] public float dummy;
+       
+        public float F(float x)
+        {
+            return Mathf.Sin(x) * Mathf.Sin(x);
+        }
+```
+
+
 ![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/AttributeVis.png)
 
 Visualised method has to be declared as public `float MethodName(float x)`
