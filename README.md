@@ -10,7 +10,9 @@
 ## Instalation
 ### Package Manager
 
-Go to `Window -> Package Manager` and add from git [URL](https://docs.unity3d.com/Manual/upm-ui-giturl.html) with `https://github.com/MPrzekop/unity-inspector-graph-drawer.git`
+Go to `Window -> Package Manager` and add from git [URL](https://docs.unity3d.com/Manual/upm-ui-giturl.html) using this URL:
+
+`https://github.com/MPrzekop/unity-inspector-graph-drawer.git`
 
 
 ## How to Use
