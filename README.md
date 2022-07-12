@@ -11,7 +11,7 @@
 ## How to Use
 ### Attribute
 Create Dummy field (limitations of property drawer) and give it attribute ("Graph")
-![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Main.png)
+![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Attribute.png)
 ### Custom editor
 In custom editor
 
