@@ -22,7 +22,7 @@ template:
         }
 ```
 
-full parameters (Method name, function x start, function x end, rect height):
+full parameters `(Method name, function x start, function x end, rect height)`:
 
 ```
  [SerializeField, Graph("F",-5,5,200)] public float dummyFull;
