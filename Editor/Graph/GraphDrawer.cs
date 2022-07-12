@@ -153,7 +153,7 @@ namespace mprzekop.unityinspectorgraph.graph
             GUI.color = cache;
         }
 
-        public static void DrawGraphAttribute(Rect position, params LineFunctionData[] functions)
+        public static void DrawGraphAttribute(Rect position,int samples, params LineFunctionData[] functions)
         {
             var data = new LineData[functions.Length];
             for (int i = 0; i < data.Length; i++)
@@ -161,7 +161,7 @@ namespace mprzekop.unityinspectorgraph.graph
                 data[i] = new LineData()
                 {
                     color = functions[i].LineColor,
-                    points = LineFunctionSampler.SampleLineFunction(functions[i], Mathf.CeilToInt(300)),
+                    points = LineFunctionSampler.SampleLineFunction(functions[i], (samples)),
                     width = functions[i].LineWidth
                 };
             }
