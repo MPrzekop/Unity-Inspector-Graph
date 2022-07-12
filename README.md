@@ -26,10 +26,10 @@ template:
 ```
  [Graph("F")] public float dummy;
        
-        public float F(float x)
-        {
-            return Mathf.Sin(x) * Mathf.Sin(x);
-        }
+ public float F(float x)
+ {
+     return Mathf.Sin(x) + Mathf.Sin(x*25)*0.2f;
+ }
 ```
 
 full parameters `(Method name, function x start, function x end, rect height, sample count)`:
