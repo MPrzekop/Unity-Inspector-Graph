@@ -11,10 +11,11 @@
 ## How to Use
 ### Attribute
 Create Dummy field and give it attribute [Graph("Method name")]
+
 template:
 
 ```
- [SerializeField, Graph("F")] public float dummy;
+ [Graph("F")] public float dummy;
        
         public float F(float x)
         {
@@ -25,7 +26,7 @@ template:
 full parameters `(Method name, function x start, function x end, rect height, sample count)`:
 
 ```
- [SerializeField, Graph(MethodName: "F",start:-5,end: 5,rectHeight:200,samples:400)] public float dummyFull;
+ [Graph(MethodName: "F",start:-5,end: 5,rectHeight:200,samples:400)] public float dummyFull;
 ```
 
 ![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/AttributeVis.png)
