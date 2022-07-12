@@ -1,5 +1,12 @@
 {
   "name": "com.mprzekop.unityinspectorgraph",
   "version": "1.0.0",
-  "displayName": "Unity Inspector Graph"
+  "displayName": "Unity Inspector Graph",
+  "hideInEditor": false,
+  "author": {
+    "name": "Michał Przekop",
+    "email": "przekop.michal@gmail.com"
+  }
 }
+
+
