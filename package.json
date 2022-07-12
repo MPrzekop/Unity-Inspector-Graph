@@ -1,7 +1,8 @@
 {
   "name": "com.mprzekop.unityinspectorgraph",
   "version": "1.0.0",
-  "displayName": "Unity Inspector Graph",
+  "displayName": "Unity Inspector Graph Drawer",
+  "description": "quickly visualise math functions with custom editor and attributes",
   "hideInEditor": false,
   "author": {
     "name": "Michał Przekop",
