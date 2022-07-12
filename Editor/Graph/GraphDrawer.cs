@@ -6,7 +6,7 @@ namespace mprzekop.unityinspectorgraph.graph
 {
     public static class GraphDrawer
     {
-        private const float FontSize = 12;
+        private const float FontSize = 14;
 
 
         private static void RemapSet(ref Vector3[] data, Vector2 oldMin, Vector2 oldMax, Vector2 newMin, Vector2 newMax)
