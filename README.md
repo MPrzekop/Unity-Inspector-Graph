@@ -4,7 +4,7 @@
  Draw any graph in your custom editor.
  
  <p align="center">
-  <img src="https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Main.png" width="700" title="hover text">
+  <img src="https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Main.png" width="700" title="header image of overlayed sines">
  </p>
  
 
@@ -47,5 +47,7 @@ but can also be declared to have regular grid:
 
 ## notes
 There is demo component and custom editor for it.
-
+<p align="center">
+  <img src="https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Demo.png" width="500" title="component demo">
+ </p>
 
