@@ -45,4 +45,7 @@ but can also be declared to have regular grid:
 ![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/ortho.png)
 
 
+## notes
+There is demo component and custom editor for it.
+
 
