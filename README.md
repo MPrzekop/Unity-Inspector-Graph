@@ -10,10 +10,24 @@
 
 ## How to Use
 ### Attribute
-Create Dummy field (limitations of property drawer) and give it attribute ("Graph")
+Create Dummy field and give it attribute [Graph("Method name")]
 ![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Attribute.png)
-### Custom editor
-In custom editor
 
-Static [GraphDrawer](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/main/Editor/Graph/GraphDrawer.cs) can draw arrays of vertices or math functions. There is demo component which contains some usecases.
+Visualised method has to be declared as public float MethodName(float x)
+
+
+Attribute can take graph start and end value, as well as graph rect height.
+
+### Custom editor
+In custom editor create a call to GraphDrawer.DrawGraph() there are overloads for:
+* array of Vector3 points
+* arbitrary points wraper with line color and width
+* function container with line color and width
+
+Graph values by default are stretched to a width of inspector window:
+![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/Stretched.png)
+but can also be declared to have regular grid:
+![](https://github.com/MPrzekop/Unity-Inspector-Graph/blob/images/Editor/GIT%20images/ortho.png)
+
+
 
