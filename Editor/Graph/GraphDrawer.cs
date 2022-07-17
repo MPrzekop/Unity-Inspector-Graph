@@ -7,7 +7,7 @@ namespace mprzekop.unityinspectorgraph.graph
     public static class GraphDrawer
     {
         private const float FontSize = 14;
-
+        private const float DividersDrawLimit = 1500;
 
         private static void RemapSet(ref Vector3[] data, Vector2 oldMin, Vector2 oldMax, Vector2 newMin, Vector2 newMax)
         {
@@ -35,6 +35,7 @@ namespace mprzekop.unityinspectorgraph.graph
                     width = 2
                 };
             }
+
             DrawGraph(200, 20, 20, Color.clear, false, data);
         }
 
@@ -97,6 +98,8 @@ namespace mprzekop.unityinspectorgraph.graph
             Color backgroundColor = default, bool orthogonalLayout = false,
             params LineData[] data)
         {
+            if (data == null || data.Length == 0) return;
+
             Color cache = GUI.color;
             Rect rect = GUILayoutUtility.GetRect(10, 1000, 200, rectHeight);
             if (backgroundColor == default)
@@ -105,38 +108,9 @@ namespace mprzekop.unityinspectorgraph.graph
             }
 
             EditorGUI.DrawRect(rect, backgroundColor);
-            var allPoints = data.Select(x => x.points).ToArray();
-            var concatPoints = ConcatArrays(allPoints);
-            float maxY = Mathf.CeilToInt(concatPoints.Max(x => x.y) * 2f) / 2f;
-
-            float minY = Mathf.FloorToInt(concatPoints.Min(x => x.y) * 2f) / 2f;
-            float rectToUnitY = Mathf.Abs(maxY - minY) / (rect.height - windowPadding * 2);
-            float unitToRectY = (rect.height - windowPadding * 2) / Mathf.Abs(maxY - minY);
-
-
-            maxY += rectToUnitY * yPadding;
-            minY -= rectToUnitY * yPadding;
-            float maxX = concatPoints.Max(x => x.x);
-            float minX = concatPoints.Min(x => x.x);
-            float rectToUnitX = Mathf.Abs(maxX - minX) / (rect.width - windowPadding * 2);
-            float unitToRectX = (rect.width - windowPadding * 2) / Mathf.Abs(maxX - minX);
-            if (orthogonalLayout)
-            {
-                maxX = Mathf.Max(maxX, maxY);
-                maxY = maxX;
-                maxX *= unitToRectX * rectToUnitY;
-                minX = Mathf.Min(minX, minY);
-                minY = minX;
-                minX *= unitToRectX * rectToUnitY;
-            }
-
-            for (var index = 0; index < data.Length; index++)
-            {
-                RemapSet(ref data[index].points, new Vector2(minX, minY), new Vector2(maxX, maxY),
-                    new Vector2(windowPadding, windowPadding),
-                    new Vector2(rect.width - windowPadding, rect.height - windowPadding));
-            }
-
+            PreparePoints(windowPadding, yPadding, rect, orthogonalLayout, out var minY, out var maxY, out var minX,
+                out var maxX,
+                ref data);
             GUI.BeginGroup(rect);
             Handles.color = Color.gray;
             DrawDividers(minX, maxX, minY, maxY, windowPadding, rect);
@@ -153,7 +127,7 @@ namespace mprzekop.unityinspectorgraph.graph
             GUI.color = cache;
         }
 
-        public static void DrawGraphAttribute(Rect position,int samples, params LineFunctionData[] functions)
+        public static void DrawGraphAttribute(Rect position, int samples, params LineFunctionData[] functions)
         {
             var data = new LineData[functions.Length];
             for (int i = 0; i < data.Length; i++)
@@ -171,34 +145,14 @@ namespace mprzekop.unityinspectorgraph.graph
 
         public static void DrawGraphAttribute(Rect position, params LineData[] data)
         {
+            if (data == null || data.Length == 0) return;
             Color cache = GUI.color;
 
             float windowPadding = 20;
             var rect = new Rect(position.position, new Vector2(position.width, 200));
             float yPadding = 20;
-            var allPoints = data.Select(x => x.points).ToArray();
-            var concatPoints = ConcatArrays(allPoints);
-            float maxY = Mathf.CeilToInt(concatPoints.Max(x => x.y) * 2f) / 2f;
-
-            float minY = Mathf.FloorToInt(concatPoints.Min(x => x.y) * 2f) / 2f;
-            float rectToUnitY = Mathf.Abs(maxY - minY) / (rect.height - windowPadding * 2);
-            float unitToRectY = (rect.height - windowPadding * 2) / Mathf.Abs(maxY - minY);
-
-
-            maxY += rectToUnitY * yPadding;
-            minY -= rectToUnitY * yPadding;
-            float maxX = concatPoints.Max(x => x.x);
-            float minX = concatPoints.Min(x => x.x);
-            float rectToUnitX = Mathf.Abs(maxX - minX) / (rect.width - windowPadding * 2);
-            float unitToRectX = (rect.width - windowPadding * 2) / Mathf.Abs(maxX - minX);
-
-
-            for (var index = 0; index < data.Length; index++)
-            {
-                RemapSet(ref data[index].points, new Vector2(minX, minY), new Vector2(maxX, maxY),
-                    new Vector2(windowPadding, windowPadding),
-                    new Vector2(rect.width - windowPadding, rect.height - windowPadding));
-            }
+            PreparePoints(windowPadding, yPadding, rect, false, out var minY, out var maxY, out var minX, out var maxX,
+                ref data);
 
             GUI.BeginGroup(rect);
             Handles.color = Color.gray;
@@ -222,6 +176,43 @@ namespace mprzekop.unityinspectorgraph.graph
                 new LineData() {color = Color.white, points = data, width = 2f});
         }
 
+        static void PreparePoints(float windowPadding, float yPadding, Rect rect, bool orthogonalLayout, out float minY,
+            out float maxY,
+            out float minX, out float maxX, ref LineData[] data)
+        {
+            var allPoints = data.Select(x => x.points).ToArray();
+            var concatPoints = ConcatArrays(allPoints);
+            maxY = Mathf.CeilToInt(concatPoints.Max(x => x.y) * 2f) / 2f;
+
+            minY = Mathf.FloorToInt(concatPoints.Min(x => x.y) * 2f) / 2f;
+            float rectToUnitY = Mathf.Abs(maxY - minY) / (rect.height - windowPadding * 2);
+            float unitToRectY = (rect.height - windowPadding * 2) / Mathf.Abs(maxY - minY);
+
+
+            maxY += rectToUnitY * yPadding;
+            minY -= rectToUnitY * yPadding;
+            maxX = concatPoints.Max(x => x.x);
+            minX = concatPoints.Min(x => x.x);
+            float rectToUnitX = Mathf.Abs(maxX - minX) / (rect.width - windowPadding * 2);
+            float unitToRectX = (rect.width - windowPadding * 2) / Mathf.Abs(maxX - minX);
+            if (orthogonalLayout)
+            {
+                maxX = Mathf.Max(maxX, maxY);
+                maxY = maxX;
+                maxX *= unitToRectX * rectToUnitY;
+                minX = Mathf.Min(minX, minY);
+                minY = minX;
+                minX *= unitToRectX * rectToUnitY;
+            }
+
+            for (var index = 0; index < data.Length; index++)
+            {
+                RemapSet(ref data[index].points, new Vector2(minX, minY), new Vector2(maxX, maxY),
+                    new Vector2(windowPadding, windowPadding),
+                    new Vector2(rect.width - windowPadding, rect.height - windowPadding));
+            }
+        }
+
         private static void DrawDividers(float minX, float maxX, float minY, float maxY, float padding, Rect parent)
         {
             Handles.color = Color.gray;
@@ -233,7 +224,14 @@ namespace mprzekop.unityinspectorgraph.graph
             float unitToRectY = (parent.height - padding * 2) / Mathf.Abs(maxY - minY);
             int startY = Mathf.FloorToInt(minY);
             float offsetY = -minY;
-            for (int i = startInt; i < Mathf.Min((maxX), 200); i++)
+            int xStep = (int) Mathf.Pow(10, Mathf.FloorToInt(Mathf.Max(Mathf.Log10(Mathf.Abs(maxX - minX)), 0)));
+            int yStep = (int) Mathf.Pow(10, Mathf.FloorToInt(Mathf.Max(Mathf.Log10(Mathf.Abs(maxY - minY)), 0)));
+
+            int xStart = Mathf.FloorToInt(minX / xStep) * xStep;
+            int yStart = Mathf.FloorToInt(minY / yStep) * yStep;
+            for (int i = xStart;
+                i < Mathf.CeilToInt(maxX);
+                i += xStep)
             {
                 Handles.color = Color.gray * 0.75f;
                 var currentWidth = (i + offset) * unitToRect + padding;
@@ -245,22 +243,11 @@ namespace mprzekop.unityinspectorgraph.graph
                 GUI.color = Color.white * 0.75f;
 
                 GUI.Label(textBox, i.ToString());
-
-                if (1 * unitToRect > 30)
-                {
-                    float divs = 10;
-                    for (int j = 1; j < divs; j++)
-                    {
-                        Handles.color = Color.gray * 0.5f;
-
-                        Handles.DrawAAPolyLine(Texture2D.whiteTexture, 1.5f,
-                            new Vector3((i + offset + j / divs) * unitToRect + padding, 0),
-                            new Vector3((i + offset + j / divs) * unitToRect + padding, parent.height - padding));
-                    }
-                }
             }
 
-            for (int i = startY - 1; i <= Mathf.Min(Mathf.CeilToInt(maxY), 200); i++)
+            for (int i = yStart;
+                i <= Mathf.CeilToInt(maxY);
+                i += yStep)
             {
                 Handles.color = Color.gray * 0.75f;
 
@@ -276,22 +263,6 @@ namespace mprzekop.unityinspectorgraph.graph
                     GUI.color = Color.white * 0.75f;
 
                     GUI.Label(textBox, i.ToString());
-                }
-
-                float divs = 5;
-                for (int j = 1; j < divs; j++)
-                {
-                    if ((h - ((i + offsetY + j / divs) * unitToRectY)) > (parent.height - padding))
-                    {
-                        continue;
-                    }
-
-                    Handles.color = Color.gray * 0.5f;
-
-                    Handles.DrawAAPolyLine(Texture2D.whiteTexture, 2f,
-                        new Vector3(padding, h - ((i + offsetY + j / divs) * unitToRectY)),
-                        new Vector3(parent.width - padding,
-                            h - ((i + offsetY + j / divs) * unitToRectY)));
                 }
             }
         }
