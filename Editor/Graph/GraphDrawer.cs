@@ -7,7 +7,7 @@ namespace mprzekop.unityinspectorgraph.graph
     public static class GraphDrawer
     {
         private const float FontSize = 14;
-        private const float DividersDrawLimit = 1500;
+        private const float DividersDrawLimit = 150000;
 
         private static void RemapSet(ref Vector3[] data, Vector2 oldMin, Vector2 oldMax, Vector2 newMin, Vector2 newMax)
         {
@@ -224,13 +224,32 @@ namespace mprzekop.unityinspectorgraph.graph
             float unitToRectY = (parent.height - padding * 2) / Mathf.Abs(maxY - minY);
             int startY = Mathf.FloorToInt(minY);
             float offsetY = -minY;
-            int xStep = (int) Mathf.Pow(10, Mathf.FloorToInt(Mathf.Max(Mathf.Log10(Mathf.Abs(maxX - minX)), 0)));
-            int yStep = (int) Mathf.Pow(10, Mathf.FloorToInt(Mathf.Max(Mathf.Log10(Mathf.Abs(maxY - minY)), 0)));
+            int xStep = (int) Mathf.CeilToInt(Mathf.Pow(10,
+                Mathf.FloorToInt(Mathf.Max(Mathf.Log10(Mathf.Abs(maxX - minX)), 0))));
+            if (Mathf.Abs(maxX - minX) / xStep < 2.5)
+            {
+                xStep = Mathf.CeilToInt(xStep / 4f);
+            }
+            else if (Mathf.Abs(maxX - minX) / xStep < 5)
+            {
+                xStep = Mathf.CeilToInt(xStep / 2f);
+            }
+
+            int yStep = (int) Mathf.CeilToInt(Mathf.Pow(10,
+                Mathf.FloorToInt(Mathf.Max(Mathf.Log10(Mathf.Abs(maxY - minY)), 0))));
+            if (Mathf.Abs(maxY - minY) / yStep < 2.5)
+            {
+                yStep = Mathf.CeilToInt(yStep / 4f);
+            }
+            else if (Mathf.Abs(maxY - minY) / yStep < 5)
+            {
+                yStep = Mathf.CeilToInt(yStep / 2f);
+            }
 
             int xStart = Mathf.FloorToInt(minX / xStep) * xStep;
             int yStart = Mathf.FloorToInt(minY / yStep) * yStep;
-            for (int i = xStart;
-                i < Mathf.CeilToInt(maxX);
+            for (int i = (int) Mathf.Max(xStart, -DividersDrawLimit);
+                i < (int) Mathf.Min(Mathf.CeilToInt(maxX), DividersDrawLimit);
                 i += xStep)
             {
                 Handles.color = Color.gray * 0.75f;
@@ -243,10 +262,21 @@ namespace mprzekop.unityinspectorgraph.graph
                 GUI.color = Color.white * 0.75f;
 
                 GUI.Label(textBox, i.ToString());
+                float divs = 10;
+                float step = xStep / (divs);
+                Handles.color = Color.gray * 0.55f;
+                for (int j = 1; j < divs; j++)
+                {
+                    var divH = currentWidth + step * j * unitToRect;
+
+                    Handles.DrawAAPolyLine(Texture2D.whiteTexture, 1f,
+                        new Vector3(divH, 0),
+                        new Vector3(divH, parent.height - padding));
+                }
             }
 
-            for (int i = yStart;
-                i <= Mathf.CeilToInt(maxY);
+            for (int i = (int) Mathf.Max(yStart, -DividersDrawLimit);
+                i <= Mathf.Min(Mathf.CeilToInt(maxY), DividersDrawLimit);
                 i += yStep)
             {
                 Handles.color = Color.gray * 0.75f;
@@ -255,7 +285,7 @@ namespace mprzekop.unityinspectorgraph.graph
                 var currentHeight = (h - ((i + offsetY) * unitToRectY));
                 if (currentHeight < (parent.height - padding))
                 {
-                    Handles.DrawAAPolyLine(Texture2D.whiteTexture, 1f,
+                    Handles.DrawAAPolyLine(Texture2D.whiteTexture, 1.5f,
                         new Vector3(padding, currentHeight),
                         new Vector3(parent.width - padding, currentHeight));
                     var textBox = new Rect(new Vector2(0, currentHeight - FontSize / 2f),
@@ -263,6 +293,21 @@ namespace mprzekop.unityinspectorgraph.graph
                     GUI.color = Color.white * 0.75f;
 
                     GUI.Label(textBox, i.ToString());
+
+                    float divs = 10;
+                    float step = yStep / (divs);
+                    Handles.color = Color.gray * 0.55f;
+
+                    for (int j = 1; j < divs; j++)
+                    {
+                        var divH = currentHeight + step * j * unitToRectY;
+                        if (divH < (parent.height - padding))
+                        {
+                            Handles.DrawAAPolyLine(Texture2D.whiteTexture, 1.5f,
+                                new Vector3(padding, divH),
+                                new Vector3(parent.width - padding, divH));
+                        }
+                    }
                 }
             }
         }
