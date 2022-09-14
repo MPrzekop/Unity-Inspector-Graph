@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using mprzekop.unityinspectorgraph.Attribute;
 using UnityEngine;
 
 namespace mprzekop.unityinspectorgraph.demo
